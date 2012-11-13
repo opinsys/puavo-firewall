@@ -1,0 +1,24 @@
+#!/bin/sh
+
+do_update() { echo "update $1"; echo "update $1\nsend" | sudo nsupdate -l; }
+
+reverse_ip() {
+  echo $1 | awk -F. '{ printf "%s.%s.%s.%s.in-addr.arpa", $4, $3, $2, $1 }'
+}
+
+reversed_ip=$(reverse_ip $ifconfig_pool_remote_ip)
+
+TTL=300
+
+# remove all other hostnames that have this IP
+for hostname in $(dig -x $ifconfig_pool_remote_ip +short); do
+  do_update "delete $hostname A $ifconfig_pool_remote_ip"
+done
+
+# connect hostname to IP (forward DNS)
+do_update "delete $common_name."
+do_update "add $common_name. $TTL A $ifconfig_pool_remote_ip"
+
+# connect IP to hostname (reverse DNS)
+do_update "delete $reversed_ip"
+do_update "add $reversed_ip $TTL PTR $common_name"

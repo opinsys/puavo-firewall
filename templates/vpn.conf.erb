@@ -1,0 +1,29 @@
+local <%= @listen_ip %>
+port <%= @listen_port %>
+proto tcp-server
+dev <%= devname %>
+
+ca <%= @filename_orgcabundle %>
+cert <%= @filename_host_crt %>
+key <%= @filename_host_key %>
+dh /etc/openvpn/keys/dh4096.pem
+crl-verify /etc/openvpn/crl.pem
+
+server-bridge nogw
+topology p2p
+
+status /var/log/openvpn/openvpn-<%= @devname %>-status.log
+log-append /var/log/openvpn/openvpn-<%= @devname %>.log
+verb 3
+mute 20
+
+comp-lzo
+keepalive 10 20
+persist-key
+persist-tun
+
+user openvpn
+group openvpn
+
+client-connect /usr/share/puavo-firewall/client-connect
+client-disconnect /usr/share/puavo-firewall/client-disconnect

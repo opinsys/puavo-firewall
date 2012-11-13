@@ -1,0 +1,13 @@
+Source: puavo-firewall
+Section: admin
+Priority: extra
+Maintainer: Veli-Matti Lintu <veli-matti.lintu@opinsys.fi>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.8.3
+
+Package: puavo-firewall
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, openvpn, isc-dhcp-server,
+ shorewall, bridge-utils, bind9, bind9utils, ulogd
+Description: Firewall management tools for Puavo connected firewall
+ and VPN servers.
